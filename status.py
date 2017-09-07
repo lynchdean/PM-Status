@@ -32,6 +32,13 @@ def login(username, password):
     res = br.submit()
     request = br.request
 
+    soup = BeautifulSoup(res.read(), "lxml")
+
+    for span in soup.findAll('span'):
+        if str(span).find("Sign In was unsuccessful.") != -1:
+            print("Incorrect username or password.")
+            quit()
+
     return br
 
 def get_status(br):
@@ -39,11 +46,7 @@ def get_status(br):
     soup = BeautifulSoup(page, "lxml")
 
     table = soup.find('table', attrs={'class':'Report MemberPackageHistory'})
-    try:
-        rows = table.find_all('tr')
-    except AttributeError:
-        print("Incorrect username or password.")
-        quit()
+    rows = table.find_all('tr')
 
     for row in rows:
         cols = row.find_all('td')
