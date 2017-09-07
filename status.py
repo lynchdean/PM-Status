@@ -1,7 +1,6 @@
 from bs4 import BeautifulSoup
 import getpass
 import mechanize
-import urllib2
 import cookielib
 
 def login(username, password):
