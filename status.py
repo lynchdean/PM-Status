@@ -47,34 +47,28 @@ def get_status(br):
     table = soup.find('table', attrs={'class':'Report MemberPackageHistory'})
     rows = table.find_all('tr')
 
+    parcels = False
     for row in rows:
         cols = row.find_all('td')
         cols = [ele.text.strip() for ele in cols]
-        if cols != [] and cols[7] == "InTransit":
-            print("[" + cols[3] + "]")
-            print(" " + u"\u2022" + " Location: " + cols[2])
+        if cols != [] and cols[7] != "Delivered":
             time_date = cols[1].split(" ")
-            print(" " + u"\u2022" + " Date: " + time_date[0] + " " + time_date[1])
-            print(" " + u"\u2022" + " Time: " + time_date[3])
+            print("[" + cols[3] + "]")
+            print(" " + u"\u2022" + " Arrived: " + cols[2] + " on " + time_date[0] + " " + time_date[1] + " @ " + time_date[3])
             print(" " + u"\u2022" + " Status: " + cols[7] + " @ " + cols[8].split(" ")[3] + "\n")
+            if cols[6] != "":
+                print(" " + u"\u2022" + " Code: " + cols[6] + "\n")
+            parcels = True
 
-        if cols != [] and cols[6] != "":
-            print("[" + cols[3] + "]")
-            print(" " + u"\u2022" + " Location: " + cols[2])
-            time_date = cols[1].split(" ")
-            print(" " + u"\u2022" + " Date: " + time_date[0] + " " + time_date[1])
-            print(" " + u"\u2022" + " Time: " + time_date[3])
-            print(" " + u"\u2022" + " Status: " + cols[7] + " @ " + cols[8].split(" ")[3])
-            print(" " + u"\u2022" + " Code: " + cols[6] + "\n")
-
-
+    if not parcels:
+        print("There is no active parcels.")
 
 def main():
-
     print "Username:",
     username = raw_input()
     password = getpass.getpass()
     print("")
+
 
     br = login(username, password)
     get_status(br)
